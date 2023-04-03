@@ -5,13 +5,13 @@
 [worldserver]
 
 ########################################
-# My module configuration
+# Free for All Fix Configuration
 ########################################
 #
-#    MyModule.Enable
-#        Description: Enable my module and print "Hello World" message at server start
+#    FFAFix.Enable
+#        Description: Enable the FFAFix module.
 #        Default:     0 - Disabled
 #                     1 - Enabled
 #
 
-MyModule.Enable = 0
+FFAFix.Enable = 0
