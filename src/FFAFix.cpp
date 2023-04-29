@@ -15,7 +15,7 @@ void FFAFixPlayerScript::UpdateFFAFlag(Player* player, bool state)
     {
         player->SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
 
-        sScriptMgr->OnFfaPvpStateUpdate(player, state);
+        AlertFFA(player, state);
 
         for (auto it = player->m_Controlled.begin(); it != player->m_Controlled.end(); ++it)
         {
@@ -26,7 +26,7 @@ void FFAFixPlayerScript::UpdateFFAFlag(Player* player, bool state)
     {
         player->RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
 
-        sScriptMgr->OnFfaPvpStateUpdate(player, state);
+        AlertFFA(player, state);
 
         for (auto it = player->m_Controlled.begin(); it != player->m_Controlled.end(); ++it)
         {
@@ -59,6 +59,31 @@ void FFAFixPlayerScript::StopAttackers(Player* player)
             player->AttackStop();
         }
     }
+}
+
+void FFAFixPlayerScript::AlertFFA(Player* player, bool state)
+{
+    if (!player)
+    {
+        return;
+    }
+
+    if (!sConfigMgr->GetOption<bool>("FFAFix.Alert.Change", true))
+    {
+        return;
+    }
+
+    std::string message = sConfigMgr->GetOption<std::string>(state ? "FFAFix.Alert.Change.FFA" : "FFAFix.Alert.Change.Safe", "");
+
+    if (message.size() < 1)
+    {
+        return;
+    }
+
+    WorldPacket data(SMSG_NOTIFICATION, (message.size() + 1));
+    data << message;
+
+    player->SendDirectMessage(&data);
 }
 
 bool FFAFixPlayerScript::HasAreaFlag(uint32 area, uint32 flag)
@@ -94,31 +119,6 @@ void FFAFixPlayerScript::OnUpdate(Player* player, uint32 /*p_time*/)
     {
         UpdateFFAFlag(player, true);
     }
-}
-
-void FFAFixPlayerScript::OnFfaPvpStateUpdate(Player* player, bool result)
-{
-    if (!player)
-    {
-        return;
-    }
-
-    if (!sConfigMgr->GetOption<bool>("FFAFix.Alert.Change", true))
-    {
-        return;
-    }
-
-    std::string message = sConfigMgr->GetOption<std::string>(result ? "FFAFix.Alert.Change.FFA" : "FFAFix.Alert.Change.Safe", "");
-
-    if (message.size() < 1)
-    {
-        return;
-    }
-
-    WorldPacket data(SMSG_NOTIFICATION, (message.size() + 1));
-    data << message;
-
-    player->SendDirectMessage(&data);
 }
 
 void FFAFixWorldScript::OnAfterConfigLoad(bool reload)
