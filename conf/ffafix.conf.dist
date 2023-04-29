@@ -24,3 +24,19 @@ FFAFix.Enable = 0
 #
 
 FFAFix.Alert.Change = 1
+
+#
+#    FFAFix.Alert.Change.FFA
+#        Description: The alert shown when entering a FFA area.
+#        Default:     "|cffff0000You are now flagged for Free for All PVP!|r"
+#
+
+FFAFix.Alert.Change.FFA = "|cffff0000You are now flagged for Free for All PVP!|r"
+
+#
+#    FFAFix.Alert.Change.Safe
+#        Description: The alert shown when entering a safe area.
+#        Default:     "|cff00ff00You have entered a safe zone.|r"
+#
+
+FFAFix.Alert.Change.Safe = "|cff00ff00You have entered a safe zone.|r"

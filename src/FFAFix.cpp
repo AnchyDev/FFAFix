@@ -108,15 +108,11 @@ void FFAFixPlayerScript::OnFfaPvpStateUpdate(Player* player, bool result)
         return;
     }
 
-    std::string message;
+    std::string message = sConfigMgr->GetOption<std::string>(result ? "FFAFix.Alert.Change.FFA" : "FFAFix.Alert.Change.Safe", "");
 
-    if (result)
+    if (message.size() < 1)
     {
-        message = "You are now flagged for Free for All PVP!";
-    }
-    else
-    {
-        message = "You have entered a safe zone.";
+        return;
     }
 
     WorldPacket data(SMSG_NOTIFICATION, (message.size() + 1));
