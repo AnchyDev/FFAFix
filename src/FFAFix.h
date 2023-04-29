@@ -16,6 +16,7 @@ public:
 
 private:
     void OnUpdate(Player* player, uint32 p_time) override;
+    void OnFfaPvpStateUpdate(Player* player, bool result) override;
     bool HasAreaFlag(uint32 area, uint32 flag);
     void UpdateFFAFlag(Player* player, bool state);
     void StopAttackers(Player* player);

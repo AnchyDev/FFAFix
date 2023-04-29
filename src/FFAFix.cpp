@@ -1,5 +1,6 @@
 #include "FFAFix.h"
 
+#include "Chat.h"
 #include "Config.h"
 #include "Player.h"
 
@@ -14,6 +15,8 @@ void FFAFixPlayerScript::UpdateFFAFlag(Player* player, bool state)
     {
         player->SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
 
+        sScriptMgr->OnFfaPvpStateUpdate(player, state);
+
         for (auto it = player->m_Controlled.begin(); it != player->m_Controlled.end(); ++it)
         {
             (*it)->SetByteValue(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
@@ -22,6 +25,8 @@ void FFAFixPlayerScript::UpdateFFAFlag(Player* player, bool state)
     else if(player->HasByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP) && !state)
     {
         player->RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
+
+        sScriptMgr->OnFfaPvpStateUpdate(player, state);
 
         for (auto it = player->m_Controlled.begin(); it != player->m_Controlled.end(); ++it)
         {
@@ -89,6 +94,35 @@ void FFAFixPlayerScript::OnUpdate(Player* player, uint32 /*p_time*/)
     {
         UpdateFFAFlag(player, true);
     }
+}
+
+void FFAFixPlayerScript::OnFfaPvpStateUpdate(Player* player, bool result)
+{
+    if (!player)
+    {
+        return;
+    }
+
+    if (!sConfigMgr->GetOption<bool>("FFAFix.Alert.Change", true))
+    {
+        return;
+    }
+
+    std::string message;
+
+    if (result)
+    {
+        message = "You are now flagged for Free for All PVP!";
+    }
+    else
+    {
+        message = "You have entered a safe zone.";
+    }
+
+    WorldPacket data(SMSG_NOTIFICATION, (message.size() + 1));
+    data << message;
+
+    player->SendDirectMessage(&data);
 }
 
 void FFAFixWorldScript::OnAfterConfigLoad(bool reload)

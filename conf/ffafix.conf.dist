@@ -15,3 +15,12 @@
 #
 
 FFAFix.Enable = 0
+
+#
+#    FFAFix.Alert.Change
+#        Description: Alert the player when their FFA state changes.
+#                     0 - Disabled
+#        Default:     1 - Enabled
+#
+
+FFAFix.Alert.Change = 1
