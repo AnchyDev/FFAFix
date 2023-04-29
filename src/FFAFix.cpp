@@ -15,7 +15,7 @@ void FFAFixPlayerScript::UpdateFFAFlag(Player* player, bool state)
     {
         player->SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
 
-        AlertFFA(player, state);
+        AlertFFA(player, true);
 
         for (auto it = player->m_Controlled.begin(); it != player->m_Controlled.end(); ++it)
         {
@@ -26,7 +26,7 @@ void FFAFixPlayerScript::UpdateFFAFlag(Player* player, bool state)
     {
         player->RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
 
-        AlertFFA(player, state);
+        AlertFFA(player, false);
 
         for (auto it = player->m_Controlled.begin(); it != player->m_Controlled.end(); ++it)
         {
