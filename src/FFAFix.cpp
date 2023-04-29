@@ -3,6 +3,11 @@
 #include "Config.h"
 #include "Player.h"
 
+bool IsSafeArea(uint32 areaId)
+{
+    return safeAreas.find(areaId) != safeAreas.end();
+}
+
 void FFAFixPlayerScript::UpdateFFAFlag(Player* player, bool state)
 {
     if (!player->HasByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP) && state)
@@ -61,7 +66,7 @@ bool FFAFixPlayerScript::HasAreaFlag(uint32 area, uint32 flag)
     return false;
 }
 
-void FFAFixPlayerScript::OnUpdate(Player* player, uint32 p_time)
+void FFAFixPlayerScript::OnUpdate(Player* player, uint32 /*p_time*/)
 {
     if (!sConfigMgr->GetOption<bool>("FFAFix.Enable", false))
     {
@@ -73,11 +78,9 @@ void FFAFixPlayerScript::OnUpdate(Player* player, uint32 p_time)
         return;
     }
 
-    auto newArea = player->GetAreaId();
+    auto area = player->GetAreaId();
 
-    if (HasAreaFlag(newArea, AREA_FLAG_CITY) ||
-        HasAreaFlag(newArea, AREA_FLAG_CAPITAL) ||
-        HasAreaFlag(newArea, AREA_FLAG_SANCTUARY))
+    if (IsSafeArea(area))
     {
         UpdateFFAFlag(player, false);
         StopAttackers(player);
@@ -88,7 +91,39 @@ void FFAFixPlayerScript::OnUpdate(Player* player, uint32 p_time)
     }
 }
 
+void FFAFixWorldScript::OnAfterConfigLoad(bool reload)
+{
+    if (reload)
+    {
+        safeAreas.clear();
+    }
+
+    QueryResult qResult = WorldDatabase.Query("SELECT areaid FROM `ffafix_safe_areas`");
+
+    if (qResult)
+    {
+        uint32 count = 0;
+
+        do
+        {
+            Field* fields = qResult->Fetch();
+
+            uint32 id = fields[0].Get<int32>();
+            safeAreas.insert(id);
+
+            count++;
+        } while (qResult->NextRow());
+
+        LOG_INFO("module", "Loaded '{}' rows from 'ffafix_safe_areas' table.", count);
+    }
+    else
+    {
+        LOG_INFO("module", "Loaded '0' rows from 'ffafix_safe_areas' table.");
+    }
+}
+
 void SC_AddFFAFixScripts()
 {
+    new FFAFixWorldScript();
     new FFAFixPlayerScript();
 }

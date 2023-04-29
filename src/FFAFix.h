@@ -4,6 +4,11 @@
 #include "ScriptMgr.h"
 #include "Player.h"
 
+#include <map>
+
+std::unordered_set<uint32> safeAreas;
+bool IsSafeArea(uint32 areaId);
+
 class FFAFixPlayerScript : PlayerScript
 {
 public:
@@ -14,6 +19,15 @@ private:
     bool HasAreaFlag(uint32 area, uint32 flag);
     void UpdateFFAFlag(Player* player, bool state);
     void StopAttackers(Player* player);
+};
+
+class FFAFixWorldScript : WorldScript
+{
+public:
+    FFAFixWorldScript() : WorldScript("FFAFixWorldScript") { }
+
+private:
+    void OnAfterConfigLoad(bool reload) override;
 };
 
 #endif // MODULE_FFAFIX_H
