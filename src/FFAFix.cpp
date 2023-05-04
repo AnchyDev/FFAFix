@@ -15,8 +15,6 @@ void FFAFixPlayerScript::UpdateFFAFlag(Player* player, bool state)
     {
         player->SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
 
-        AlertFFA(player, true);
-
         for (auto it = player->m_Controlled.begin(); it != player->m_Controlled.end(); ++it)
         {
             (*it)->SetByteValue(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
@@ -25,8 +23,6 @@ void FFAFixPlayerScript::UpdateFFAFlag(Player* player, bool state)
     else if(player->HasByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP) && !state)
     {
         player->RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
-
-        AlertFFA(player, false);
 
         for (auto it = player->m_Controlled.begin(); it != player->m_Controlled.end(); ++it)
         {
@@ -118,6 +114,23 @@ void FFAFixPlayerScript::OnUpdate(Player* player, uint32 /*p_time*/)
     else
     {
         UpdateFFAFlag(player, true);
+    }
+}
+
+void FFAFixPlayerScript::OnUpdateArea(Player* player, uint32 oldArea, uint32 newArea)
+{
+    if (!player)
+    {
+        return;
+    }
+
+    if (IsSafeArea(oldArea) && !IsSafeArea(newArea))
+    {
+        AlertFFA(player, true);
+    }
+    else if (!IsSafeArea(oldArea) && IsSafeArea(newArea))
+    {
+        AlertFFA(player, false);
     }
 }
 

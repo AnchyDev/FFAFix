@@ -16,6 +16,7 @@ public:
 
 private:
     void OnUpdate(Player* player, uint32 p_time) override;
+    void OnUpdateArea(Player* player, uint32 oldArea, uint32 newArea) override;
     bool HasAreaFlag(uint32 area, uint32 flag);
     void UpdateFFAFlag(Player* player, bool state);
     void StopAttackers(Player* player);
