@@ -17,6 +17,24 @@
 FFAFix.Enable = 0
 
 #
+#    FFAFix.Protect.Dungeons
+#        Description: Dungeons are considered as safe zones.
+#                     0 - Disabled
+#        Default:     1 - Enabled
+#
+
+FFAFix.Protect.Dungeons = 1
+
+#
+#    FFAFix.Protect.Raids
+#        Description: Raids are considered as safe zones.
+#                     0 - Disabled
+#        Default:     1 - Enabled
+#
+
+FFAFix.Protect.Raids = 1
+
+#
 #    FFAFix.Alert.Change
 #        Description: Alert the player when their FFA state changes.
 #                     0 - Disabled

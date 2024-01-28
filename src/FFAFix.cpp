@@ -4,6 +4,27 @@
 #include "Config.h"
 #include "Player.h"
 
+bool IsInSafeArea(Player* player)
+{
+    auto map = player->GetMap();
+    if (!map)
+    {
+        return true;
+    }
+
+    if (map->IsDungeon())
+    {
+        return sConfigMgr->GetOption<bool>("FFAFix.Protect.Dungeons", true);
+    }
+
+    if (map->IsRaid())
+    {
+        return sConfigMgr->GetOption<bool>("FFAFix.Protect.Raids", true);
+    }
+
+    return IsSafeArea(player->GetAreaId());
+}
+
 bool IsSafeArea(uint32 areaId)
 {
     return safeAreas.find(areaId) != safeAreas.end();
@@ -104,9 +125,7 @@ void FFAFixPlayerScript::OnUpdate(Player* player, uint32 /*p_time*/)
         return;
     }
 
-    auto area = player->GetAreaId();
-
-    if (IsSafeArea(area))
+    if (IsInSafeArea(player))
     {
         UpdateFFAFlag(player, false);
         StopAttackers(player);

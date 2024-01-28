@@ -7,6 +7,7 @@
 #include <map>
 
 std::unordered_set<uint32> safeAreas;
+bool IsInSafeArea(Player* player);
 bool IsSafeArea(uint32 areaId);
 
 class FFAFixPlayerScript : PlayerScript
