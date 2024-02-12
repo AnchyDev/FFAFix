@@ -12,14 +12,18 @@ bool IsInSafeArea(Player* player)
         return true;
     }
 
-    if (map->IsDungeon())
+    if (map->IsDungeon() ||
+        map->IsRaid())
     {
-        return sConfigMgr->GetOption<bool>("FFAFix.Protect.Dungeons", true);
-    }
+        if (sConfigMgr->GetOption<bool>("FFAFix.Protect.Dungeons", true))
+        {
+            return !player->IsCharmed() && !player->isPossessed();
+        }
 
-    if (map->IsRaid())
-    {
-        return sConfigMgr->GetOption<bool>("FFAFix.Protect.Raids", true);
+        if (sConfigMgr->GetOption<bool>("FFAFix.Protect.Raids", true))
+        {
+            return !player->IsCharmed() && !player->isPossessed();
+        }
     }
 
     return IsSafeArea(player->GetAreaId());
